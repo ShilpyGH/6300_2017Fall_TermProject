@@ -224,8 +224,15 @@ def labEntry(request):
     patient['dob'] = dob
     patient['age'] = age
     patient['id'] = patientId
-    form = Labs2Form()
 
+    patientVitals = PatientVitalsModel.objects.only('temperature').filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
+    #print( list(patientVitals.last()) )
+
+    temperature=100
+    patient['temperature'] =100
+
+    form = Labs2Form()
+    #print(temperature[0:1])
     return render(request, 'labEntry.html',
                   {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage, })
 
@@ -315,6 +322,9 @@ def proceed(request):
     patient['age'] = age
     patient['id'] = patientId
 
+    return render(request, 'proceed.html',
+                  {'form': '', 'patient': patient, 'observation': '', 'errorMessage': errorMessage, })
+
 def cpoe(request):
     patientId = 'cf-1507833566732'
 
@@ -389,3 +399,44 @@ def chooseAntibiotics():
         elif penicillin_allergy == False:
             medication.append("Meropenem")
             rxNorm.append("29561")
+
+
+
+
+def getPatient(patientId):
+        settings = {
+            'app_id': 'my_web_app',
+            'api_base': 'https://fhirtest.uhn.ca/baseDstu3'
+        }
+
+        try:
+            smart = client.FHIRClient(settings=settings)
+            patient = p.Patient.read(patientId, smart.server)
+
+            first_name = patient.name[0].given[0]
+            family_name = patient.name[0].family
+            dob = patient.birthDate.isostring
+            dob2 = datetime.datetime.strptime(dob, '%Y-%m-%d')
+            gender = patient.gender
+            now = datetime.datetime.today()
+            rdelta = relativedelta(now, dob2)
+            age = rdelta.years
+
+        except:
+            first_name = 'Captain'
+            family_name = 'America'
+            gender = 'Male'
+            dob = '1920-07-04'
+            dob2 = datetime.strptime(dob, '%Y-%m-%d')
+            age = relativedelta(datetime.today(), dob2).years
+
+        patient = {}
+        patient['first_name'] = first_name
+        patient['family_name'] = family_name
+        patient['gender'] = gender
+        patient['dob'] = dob
+        patient['age'] = age
+        patient['id'] = patientId
+        patient['vitals'] = PatientVitalsModel.objects.filter(patientID=PatientModel.objects.get(patientID=patientId))
+
+        return patient

@@ -81,6 +81,7 @@ tbody tr {
                         <p>
                             <form action="" method="post">
                                 <table>
+                                    <tr><td style="color:red">{% csrf_token %}{{ errorMessage }}</td></tr>
                                     <tr>
                                         <th>Drug</th>
                                         <th>Dose</th>

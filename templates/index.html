@@ -54,27 +54,10 @@ tbody tr {
     </style>
 
     <script>
-        function submitVitalsForm(){
-            document.getElementById("vitalsForm").submit();
-        }
-        function submitVitalsForm2(){
-            document.getElementById("cancelButtonValue").value = "true"
-            document.getElementById("vitalsForm").submit();
-            $('#cancel_alert_modal').modal("show");
-        }
-{#        function checkTempAnc() {#}
-{#            var temp = document.getElementById("temperature").value;#}
-{#            var systolic = document.getElementById("systolic").value;#}
-{#            var diastolic = document.getElementById("diastolic").value;#}
-{#            var neutrophil_count_last_seven = document.getElementById("neutrophil_count_last_seven").value;#}
-{##}
-{#            /*if ( neutrophil_count_last_seven < 500 && temp > 98.6) {#}
-{#                $('#myModal').modal("show");#}
-{#            } else {#}
-{#                submitVitalsForm();#}
-{#            }*/#}
-{#        }#}
+
         function checkTempAnc2() {
+
+            $('#cancel_alert_modal').modal("hide");
             var temp = document.getElementById("temperature").value;
             var systolic = document.getElementById("systolic").value;
             var diastolic = document.getElementById("diastolic").value;
@@ -93,7 +76,27 @@ tbody tr {
                 submitVitalsForm();
             }
         }
+        function submitVitalsForm(){
+            document.getElementById("vitalsForm").submit();
+        }
+        function cancelAlertModal(){
+            $('#lowRiskModal').modal("hide");
+            $('#highRiskModal').modal("hide");
+            $('#cancel_alert_modal').modal("show");
+        }
+        function submitVitalsForm2(){
 
+            /* if go back to alert is selected, show the right high/low modal */
+
+            var reason = document.querySelector('input[name = "reason"]:checked').value;
+            if(reason==3) {
+                checkTempAnc2() ;
+            } else {
+
+                document.getElementById("cancelButtonValue").value = "true";
+                document.getElementById("vitalsForm").submit();
+            }
+        }
     </script>
 </head>
 
@@ -101,7 +104,7 @@ tbody tr {
     <div style="padding:5px 0 0 0; height:5px" class="container">
         <div class="col-md-12">
             <div class="panel panel-primary">
-                <div class="panel-heading">EMERGENCY DEPARTMENT ASSESSMENT datetime.date.today()</div>
+                <div class="panel-heading">EMERGENCY DEPARTMENT ASSESSMENT</div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-3"><b>NAME:</b> {{ patient.familyName }}, {{patient.firstName}} {{ patient.middleName }}  </div>
@@ -261,7 +264,7 @@ tbody tr {
             </div>
             <div class="modal-footer">
                 <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitVitalsForm()">OK</button>
-                    <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                    <button type="button" class="btn btn-default" onclick="cancelAlertModal()">Cancel</button>
                 </form>
             </div>
           </div>
@@ -289,7 +292,7 @@ tbody tr {
                 </div>
                 <div class="modal-footer">
                     <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitVitalsForm()">OK</button>
-                        <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                        <button type="button" class="btn btn-default" onclick="cancelAlertModal()">Cancel</button>
                     </form>
                 </div>
               </div>
@@ -307,22 +310,22 @@ tbody tr {
                   <p align="center">
                     <table>
                         <tr>
-                            <td><input type="radio" name="reason" id="1"></td>
+                            <td><input type="radio" name="reason" value="1"  id="1"></td>
                             <td>Error - incorrect information</td>
                         </tr>
                         <tr>
-                            <td><input type="radio" name="reason" id="2"></td>
+                            <td><input type="radio" name="reason"  value="2" id="2"></td>
                             <td>Contraindicated</td>
                         </tr>
                         <tr>
-                            <td><input type="radio" name="reason" id="3"></td>
+                            <td><input type="radio" name="reason" value="3" id="3"></td>
                             <td>Go back to alert</td>
                         </tr>
                     </table>
                   </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Submit</button>
+                    <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Submit</button>
                 </div>
               </div>
             </div>

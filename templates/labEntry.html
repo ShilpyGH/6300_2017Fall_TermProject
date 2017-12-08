@@ -39,7 +39,7 @@ thead, tfoot {
     width:calc(50% - 18px);
 }
 tbody {
-    height:400px;
+
     overflow:auto;
     overflow-x:hidden;
     display:block;
@@ -64,7 +64,7 @@ tbody tr {
         }
 
         function checkTempAnc() {
-            var temp = document.getElementById("temperature").value; /* WRONG the temperature here should come from the database*/
+            var temp = {{ patient.temperature }} /* WRONG the temperature here should come from the database*/
             var anc_current = document.getElementById("anc_current").value;
             var masccscore = {{ masscore }}
 
@@ -85,6 +85,7 @@ tbody tr {
 </head>
 
 <body>
+
      <div style="padding:20px 0 0 0" class="container">
         <div class="col-md-12">
             <div class="panel panel-primary">

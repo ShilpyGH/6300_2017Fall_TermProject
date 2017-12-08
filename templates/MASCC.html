@@ -1,0 +1,204 @@
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>MASCC SCORE</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://lite.bmi.utah.edu/http://lite.bmi.utah.edu/images/infobutton_icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-pills>li.active>a,
+        .nav-pills>li.active>a:focus,
+        .nav-pills>li.active>a:hover {
+            background-color: #BBBBBB;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            padding: 4px;
+{#            font-size: "14";#}
+            line-height: 1.3333333;
+            border-radius: 6px;
+        }
+
+table {
+    max-width:500px;
+    table-layout:fixed;
+    {% comment %}margin:auto;{% endcomment %}
+}
+th, td {
+    padding:5px 10px;
+    {#    border:1px solid #000;#}
+}
+thead, tfoot {
+    background:#f9f9f9;
+    display:table;
+    width:50%;
+    width:calc(50% - 18px);
+}
+tbody {
+
+    overflow:auto;
+    overflow-x:hidden;
+    display:block;
+    width:100%;
+}
+tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+    <script>
+        function calcMASCC(){
+    /*        alert(document.getElementById("burden").options[sel.selectedIndex].text));*/
+
+
+            var systolic = {{ patient.sbp }};
+            var copd = document.querySelector('input[name = "copd"]:checked').value;
+            var burden = document.querySelector('input[name = "burden"]:checked').value;
+            var cancer = document.querySelector('input[name = "cancer"]:checked').value;
+            var fungemia = document.querySelector('input[name = "fungemia"]:checked').value;
+            var saline = document.querySelector('input[name = "fluid"]:checked').value;
+            var status = document.getElementById("inpatient").value;
+            var age = {{ patient.age }};
+
+            var burden_score = 5;
+            var age_score = 2;
+            var sbp_score = 5;
+            var saline_score = 3;
+            var COPD_score=4;
+            var cancer_score = 4;
+            var fungemia_score = 0;
+
+            if (burden == "moderate"){
+                burden_score =3;
+            }else if(burden == "severe"){
+                burden_score = 0;
+            }else{
+                burden_score =5;
+            }
+
+            if (age >= 60){
+                age_score = 0;
+            }
+            if (systolic <= 90){
+                sbp_score = 0;
+            }
+            if(saline=="yes"){
+                saline_score = 0;
+            }
+            if (copd == "yes"){
+                COPD_score = 0;
+            }
+            if (cancer == "solid"){
+                cancer_score = 0;
+            }
+            if (cancer == "solid" || cancer == "hematologic" && fungemia=="yes"){
+                cancer_score = 0;
+            }
+            var MASCC_score =  age_score + sbp_score + saline_score + COPD_score + cancer_score;
+            $('#masccModal').modal("show");
+                $('#mascc_score').text(MASCC_score);
+
+        }
+    </script>
+</head>
+
+<body>
+     <div style="padding:20px 0 0 0" class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">EMERGENCY DEPARTMENT ASSESSMENT</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3"><b>NAME:</b> {{ patient.familyName }}, {{patient.firstName}} {{ patient.middleName }}  </div>
+                        <div class="col-md-3"><b>Pt ID</b> {{ patient.id }} </div>
+                        <div class="col-md-3"><b>GENDER:</b> {{ patient.gender }}</div>
+                        <div class="col-md-3"><b>AGE:</b> {{ patient.age }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">MASCC SCORE CALCULATOR</div>
+            <div class="panel-body">
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <p>
+
+                            <form action="" method="post">
+                                <table>
+
+                                    <tr>
+                                        <td>Burden of Illness</td>
+                                        <td><input type="radio" name="burden" value="mild"> Mild
+                                            <input type="radio" name="burden" value="moderate"> Moderate
+                                            <input type="radio" name="burden" value="severe"> Severe</td></tr>
+                                    <tr><td>Systolic</td><td><input type="text" name="systolic" id="systolic" value={{ patient.sbp }}></td></tr>
+                                    <tr><td>Active COPD</td>
+                                        <td><input type="radio" name="copd" value="yes"> Yes
+                                            <input type="radio" name="copd" value="no"> No</td>
+                                    </tr>
+                                    <tr><td>Type of Malignancy</td>
+                                        <td><input type="radio" name="cancer" value="solid"> Solid
+                                            <input type="radio" name="cancer" value="hematologic"> Hematologic</td>
+                                    </tr>
+                                    <tr><td>History of Fungemia</td>
+                                        <td><input type="radio" name="fungemia" value="yes"> Yes
+                                            <input type="radio" name="fungemia" value="no"> No</td>
+                                    </tr>
+                                    <tr><td>Dehydration requiring IV Fluid</td>
+                                        <td><input type="radio" name="fluid" value="yes"> Yes
+                                            <input type="radio" name="fluid" value="no"> No</td>
+                                    </tr>
+                                    <tr><td>Status (inpatient\outpatient)</td>
+                                        <td><input type="text" name="inpatient" id="inpatient" value="inpatient"></td></tr>
+                                    <tr><td>Age</td><td><input type="text" name="age" id="age" value={{ patient.age }}></td></tr>
+                                    <tr>
+                                        <td><button type="button" class="btn btn-info btn-lg" onclick="calcMASCC()">Submit00
+                                        </button></td>
+                                        <td><input type="button" class="btn btn-info btn-lg" onclick="calcMASCC()"/>Submit
+                                        </td>
+                                    </tr>
+
+                                </table>
+
+                            </form>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+         </div>
+
+        <div class="modal fade" id="masccModal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" align="center">Alert</h4>
+                </div>
+                <div class="modal-body">
+                  <p align="center">
+                      MASCC Score: <span id="mascc_score"></span>
+                  </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

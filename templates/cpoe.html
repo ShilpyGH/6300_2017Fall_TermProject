@@ -1,0 +1,117 @@
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>CPOE</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://lite.bmi.utah.edu/http://lite.bmi.utah.edu/images/infobutton_icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-pills>li.active>a,
+        .nav-pills>li.active>a:focus,
+        .nav-pills>li.active>a:hover {
+            background-color: #BBBBBB;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            padding: 4px;
+{#            font-size: "14";#}
+            line-height: 1.3333333;
+            border-radius: 6px;
+        }
+
+table {
+    max-width:450px;
+    table-layout:fixed;
+    {% comment %}margin:auto;{% endcomment %}
+}
+th, td {
+    padding:5px 10px;
+    {#    border:1px solid #000;#}
+}
+thead, tfoot {
+    background:#f9f9f9;
+    display:table;
+    width:50%;
+    width:calc(50% - 18px);
+}
+tbody {
+    height:50px;
+    overflow:auto;
+    overflow-x:hidden;
+    display:block;
+    width:100%;
+}
+tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+</head>
+
+<body>
+     <div style="padding:20px 0 0 0" class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">PATIENT INFORMATION</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3"><b>NAME:</b> {{ patient.familyName }}, {{patient.firstName}} {{ patient.middleName }}  </div>
+                        <div class="col-md-3"><b>Pt ID</b> cf-1508345037261 </div> <!-- #??? how to get the patient ID {{ patient.id }}-->
+                        <div class="col-md-3"><b>GENDER:</b> {{ patient.gender }}</div>
+                        <div class="col-md-3"><b>AGE:</b> {{ patient.age }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">ORDER ENTRY</div>
+            <div class="panel-body">
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <p>
+                            <form action="" method="post">
+                                <table>
+                                    <tr>
+                                        <th>Drug</th>
+                                        <th>Dose</th>
+                                        <th>Route</th>
+                                        <th>Frequency</th>
+                                      </tr>
+                                    <tr>
+                                        <td><input type="text" name="med_l" value="Ciprofloxacin 500mg Tablets"/></td>
+                                        <td><input type="text" name="dose_l" value="1 tablet"/></td>
+                                        <td><input type="text" name="route_l" value="PO"/></td>
+                                        <td><input type="text" name="frequency_l" value="Twice Daily"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" name="med_l_2" value="Amoxicillin/Clauvanate 500mg/125mg tablets"/></td>
+                                        <td><input type="text" name="dose_l_2" value="1 tablet" /></td>
+                                        <td><input type="text" name="route_l_2" value="PO" /></td>
+                                        <td><input type="text" name="frequency_l_2" value="Four Times Daily" /></td>
+                                    </tr>
+
+
+                                </table>
+                                <input type="submit" value="Submit" name=""/>
+                            </form>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+         </div>
+    </div>
+
+</body>
+</html>

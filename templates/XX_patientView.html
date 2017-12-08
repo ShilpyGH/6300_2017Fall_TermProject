@@ -1,0 +1,152 @@
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>Blood Pressure Management</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://lite.bmi.utah.edu/http://lite.bmi.utah.edu/images/infobutton_icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-pills>li.active>a,
+        .nav-pills>li.active>a:focus,
+        .nav-pills>li.active>a:hover {
+            background-color: #BBBBBB;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            padding: 4px;
+            font-size: 14;
+            line-height: 1.3333333;
+            border-radius: 6px;
+        }
+
+table {
+    max-width:300px;
+    table-layout:fixed;
+    {% comment %}margin:auto;{% endcomment %}
+}
+th, td {
+    padding:5px 10px;
+    {#    border:1px solid #000;#}
+}
+thead, tfoot {
+    background:#f9f9f9;
+    display:table;
+    width:50%;
+    width:calc(50% - 18px);
+}
+tbody {
+    height:150px;
+    overflow:auto;
+    overflow-x:hidden;
+    display:block;
+    width:100%;
+}
+tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+</head>
+
+<body>
+
+
+
+    <!--<div style="padding:20px 0 0 0" class="container">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Patient Search</button>
+            </form>
+        </div>
+    </div>-->
+    <div style="padding:20px 0 0 0" class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Patient Information</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3"><b>NAME:</b> {{ patient.firstName }} {{ patient.familyName }} </div>
+                        <div class="col-md-3"><b>GENDER:</b> {{ patient.gender }}</div>
+                        <div class="col-md-3"><b>AGE:</b> {{ patient.age }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">Blood Pressure Management</div>
+            <div class="panel-body">
+
+                <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="tab" href="#home">Blood Pressure Entry</a></li>
+                    <li><a data-toggle="tab" href="#menu1">Enter Blood History</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <p>
+                            <!--<form action="infobutton.html" method="post">
+                                {% csrf_token %}
+                                <input type="text" value="" name="diastolic"/>
+                                <input type="text" value="" name="systolic"/>
+                                <input type="submit" value="Submit" name="addNewBP"/>
+                            </form>
+                            {{ bpmForm }}-->
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                {{ errorMessage }}
+                                <table style='border:solid 0px '>
+                                    <tr><td>Date</td><td>{{ form.bpDate }}</td></tr>
+                                    <tr><td>Diastolic</td><td>{{ form.diastolic }}</td></tr>
+                                    <tr><td>Systolic</td><td>{{ form.systolic }}</td></tr>
+                                </table>
+                                <input type="submit" value="Submit" name="addNewBP"/>
+                            </form>
+                        </p>
+                    </div>
+                    <div id="menu1" class="tab-pane fade">
+                        <p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                      <th scope="col">systolic</th>
+                                      <th scope="col">diastolic</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bp in patient.bpHistory %}
+                                        <tr><td>{{ bp.bpDate }}</td><td>{{ bp.systolic }}</td><td>{{ bp.diastolic }}</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+
+
+
+
+
+

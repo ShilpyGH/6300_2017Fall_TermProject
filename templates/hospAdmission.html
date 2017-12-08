@@ -1,0 +1,109 @@
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>Hospital Administration</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://lite.bmi.utah.edu/http://lite.bmi.utah.edu/images/infobutton_icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-pills>li.active>a,
+        .nav-pills>li.active>a:focus,
+        .nav-pills>li.active>a:hover {
+            background-color: #BBBBBB;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            padding: 4px;
+{#            font-size: "14";#}
+            line-height: 1.3333333;
+            border-radius: 6px;
+        }
+
+table {
+    max-width:500px;
+    table-layout:fixed;
+    {% comment %}margin:auto;{% endcomment %}
+}
+th, td {
+    padding:5px 10px;
+    {#    border:1px solid #000;#}
+}
+thead, tfoot {
+    background:#f9f9f9;
+    display:table;
+    width:50%;
+    width:calc(50% - 18px);
+}
+tbody {
+    height:300px;
+    overflow:auto;
+    overflow-x:hidden;
+    display:block;
+    width:100%;
+}
+tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+</head>
+
+<body>
+     <div style="padding:20px 0 0 0" class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">EMERGENCY DEPARTMENT ASSESSMENT</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3"><b>NAME:</b> {{ patient.familyName }}, {{patient.firstName}} {{ patient.middleName }}  </div>
+                        <div class="col-md-3"><b>Pt ID</b> cf-1508345037261 </div> <!-- #??? how to get the patient ID {{ patient.id }}-->
+                        <div class="col-md-3"><b>GENDER:</b> {{ patient.gender }}</div>
+                        <div class="col-md-3"><b>AGE:</b> {{ patient.age }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">Hospital Administration</div>
+            <div class="panel-body">
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <p>
+
+                            <form action="" method="post">
+                                <table>
+
+                                    <tr><td>Burden of Illness</td><td>{{ patient.burdern }}</td></tr>
+                                    <tr><td>Systolic</td><td>{{ patient.systolic }}</td></tr>
+                                    <tr><td>Diastolic</td><td>{{ patient.diastolic }}</td></tr>
+                                    <tr><td>Active COPD</td><td>{{ patient.copd }}</td></tr>
+                                    <tr><td>Type of Malignancy</td><td>{{ patient.malignancy }}</td></tr>
+                                    <tr><td>History of Fungemia</td><td>{{ patient.fungemia }}</td></tr>
+                                    <tr><td>Dehydration requiring IV Fluid</td><td>{{ patient.iv }}</td></tr>
+                                    <tr><td>Status (inpatient\outpatient)</td><td>{{ patient.status }}</td></tr>
+                                    <tr><td>Age Status</td><td>{{ patient.age }}</td></tr>
+
+                                </table>
+                                <input type="submit" value="Submit" name="addNewBP"/>
+                            </form>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+         </div>
+    </div>
+
+</body>
+</html>

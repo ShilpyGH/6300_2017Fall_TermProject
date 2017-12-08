@@ -1,0 +1,343 @@
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema">
+{% load static %}
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>Neutropenic Fever</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://lite.bmi.utah.edu/http://lite.bmi.utah.edu/images/infobutton_icon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-pills>li.active>a,
+        .nav-pills>li.active>a:focus,
+        .nav-pills>li.active>a:hover {
+            background-color: #BBBBBB;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            padding: 2px;
+{#            font-size: 14;#}
+            line-height: 1.3333333;
+            border-radius: 6px;
+        }
+
+table {
+    max-width:80%;
+    table-layout:fixed;
+    {% comment %}margin:auto;{% endcomment %}
+}
+th, td {
+    padding:1px 5px;
+{#        border:1px solid #000;#}
+}
+thead, tfoot {
+    background:#f9f9f9;
+    display:table;
+    width:50%;
+    width:calc(50% - 18px);
+}
+tbody {
+{#    height:200px;#}
+    overflow:auto;
+    overflow-x:hidden;
+    display:block;
+    width:100%;
+}
+tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+
+    <script>
+        function submitVitalsForm(){
+            document.getElementById("vitalsForm").submit();
+        }
+        function submitVitalsForm2(){
+            document.getElementById("cancelButtonValue").value = "true"
+            document.getElementById("vitalsForm").submit();
+            $('#cancel_alert_modal').modal("show");
+        }
+{#        function checkTempAnc() {#}
+{#            var temp = document.getElementById("temperature").value;#}
+{#            var systolic = document.getElementById("systolic").value;#}
+{#            var diastolic = document.getElementById("diastolic").value;#}
+{#            var neutrophil_count_last_seven = document.getElementById("neutrophil_count_last_seven").value;#}
+{##}
+{#            /*if ( neutrophil_count_last_seven < 500 && temp > 98.6) {#}
+{#                $('#myModal').modal("show");#}
+{#            } else {#}
+{#                submitVitalsForm();#}
+{#            }*/#}
+{#        }#}
+        function checkTempAnc2() {
+            var temp = document.getElementById("temperature").value;
+            var systolic = document.getElementById("systolic").value;
+            var diastolic = document.getElementById("diastolic").value;
+            var neutrophil_count_last_seven = document.getElementById("neutrophil_count_last_seven").value;
+            var masccscore = {{ masscore }} /*document.getElementById("masccscore").value;*/
+
+            if ( neutrophil_count_last_seven < 500 && temp > 98.6  && masccscore > 21) {
+                $('#lowRiskModal').modal("show");
+                $('#temperatureModalLow').text(temp);
+                $('#ancLow').text(neutrophil_count_last_seven);
+            } else if ( neutrophil_count_last_seven < 500 && temp > 98.6 && masccscore < 21) {
+                $('#highRiskModal').modal("show");
+                $('#temperatureModalHigh').text(temp);
+                $('#ancHigh').text(neutrophil_count_last_seven);
+            } else {
+                submitVitalsForm();
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <div style="padding:5px 0 0 0; height:5px" class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">EMERGENCY DEPARTMENT ASSESSMENT datetime.date.today()</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3"><b>NAME:</b> {{ patient.familyName }}, {{patient.firstName}} {{ patient.middleName }}  </div>
+                        <div class="col-md-3"><b>PT ID</b> {{ patientId }}</div>
+                        <div class="col-md-3"><b>GENDER:</b> {{ patient.gender }}</div>
+                        <div class="col-md-3"><b>AGE:</b> {{ patient.age }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table style="width: 75%; height: 200px" align="center">
+        <tr>
+            <td>
+                <div style="padding:5px 0 0 0" class="container">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">PROBLEM LIST</div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                    <table style="width: 50%; height: 260px">
+                                        <tr>
+                                            <td>Chronic Atrial Fibrillation <br></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Aleukemic Myeloid Leukemia</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Moderate Chronic Obstructive Pulmonary Disease</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fungemia</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div style="padding:5px 0 0 0" class="container">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">LABORATORY RESULTS FOR LAST 7 DAYS</div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                    <table style="width: 50%; height:260px">
+                                        <tr>
+                                            <td align="right">Serum Creatinine</td>
+                                            <td><input type="text" name="systolic" value="2.0 mg/dL"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Absolute Neutrophil Count</td>
+                                            <td><input type="text" id="neutrophil_count_last_seven" name="neutrophil_count_last_seven" value="300"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Blood Urea Nitrogen (BUN)</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Calcium</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Carbon Dioxide (Bicarbonate)</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Chloride</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Glucose</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td align="right">Sodium</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Potassium</td>
+                                            <td><input type="text" name="systolic" value=""></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">ENTER VITALS</div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <form action="" id="vitalsForm" method="post">
+                            <table>
+                                <tr><td style="color:red">{% csrf_token %}{{ errorMessage }}</td></tr>
+                                <tr>
+                                    <td>Systolic BP </td><td><input type="text" name="systolic" id="systolic" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td>Diastolic BP</td><td><input type="text" name="diastolic" id="diastolic" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td>Temperature</td><td><input type="text" name="temperature" id="temperature" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td>Heart Rate</td><td><input type="text" name="heartrate" id="heartrate" value="">
+                                            <input name="cancelButtonValue" id="cancelButtonValue" value="false" type="hidden"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-lg" onclick="checkTempAnc2()">Submit
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<!-- lowRiskModal -->
+    <div class="modal fade" id="lowRiskModal" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title" align="center">Alert</h4>
+            </div>
+            <div class="modal-body">
+              <p align="center">The patient has: <br>
+                  ANC:  <span id="ancLow"></span><br>
+                  Temperature:  <span id="temperatureModalLow"></span><br>
+                  MASCC Score: <span id="masccscore">{{ masscore }}</span> <br><br>
+                  Low risk for febrile neutropenia
+                  <a href="http://service.oib.utah.edu:8080/infobutton-service/infoRequest?representedOrganization.id.root=medicaldecisionmaking.org&taskContext.c.c=PROBLISTREV&mainSearchCriteria.v.c=288.00&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=febrile neutropenia&patientPerson.administrativeGenderCode.c=M&age.v.v=64&age.v.u=a&ageGroup.v.c=D000368&encounter.c.c=IMP&informationRecipient=PROV&informationRecipient.languageCode.c=en&informationRecipient.healthCareProvider.c.c=200000000X&performer=PROV&performer.languageCode.c=en&performer.healthCareProvider.c.c=200000000X" target="_blank">
+                      <button class="btn btn-primary">i</button>
+                      </a><br><br>
+                  Consider oral and/or outpatient empiric antibiotic therapy after discussion with oncology.
+              </p>
+            </div>
+            <div class="modal-footer">
+                <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitVitalsForm()">OK</button>
+                    <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+<!-- highRiskModal -->
+        {% load staticfiles %}
+        <div class="modal fade" id="highRiskModal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" align="center">Alert</h4>
+                </div>
+                <div class="modal-body">
+                  <p align="center">The patient has: <br>
+              ANC: <span id="ancHigh"></span><br>
+              Temperature: <span id="temperatureModalHigh"></span><br>
+              MASCC Score: <span id="masccscore">{{ masscore }}</span> <br><br>
+              High risk for febrile neutropenia <a href="http://service.oib.utah.edu:8080/infobutton-service/infoRequest?representedOrganization.id.root=medicaldecisionmaking.org&taskContext.c.c=PROBLISTREV&mainSearchCriteria.v.c=288.00&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=febrile neutropenia&patientPerson.administrativeGenderCode.c=M&age.v.v=64&age.v.u=a&ageGroup.v.c=D000368&encounter.c.c=IMP&informationRecipient=PROV&informationRecipient.languageCode.c=en&informationRecipient.healthCareProvider.c.c=200000000X&performer=PROV&performer.languageCode.c=en&performer.healthCareProvider.c.c=200000000X" target="_blank">
+                      <button class="btn btn-primary">i</button>
+                      </a><br><br>
+              Admit for empiric antibiotics if not already inpatient.
+                  </p>
+                </div>
+                <div class="modal-footer">
+                    <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitVitalsForm()">OK</button>
+                        <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+<!-- reason for cancel modal  -->
+        <div class="modal fade" id="cancel_alert_modal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" align="center">Reason for override</h4>
+                </div>
+                <div class="modal-body">
+                  <p align="center">
+                    <table>
+                        <tr>
+                            <td><input type="radio" name="reason" id="1"></td>
+                            <td>Error - incorrect information</td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="reason" id="2"></td>
+                            <td>Contraindicated</td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="reason" id="3"></td>
+                            <td>Go back to alert</td>
+                        </tr>
+                    </table>
+                  </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Submit</button>
+                </div>
+              </div>
+            </div>
+        </div>
+</div>
+
+</body>
+
+</html>
+
+
+{#url neutropenia#}
+{#http://service.oib.utah.edu:8080/infobutton-service/infoRequest?representedOrganization.id.root=medicaldecisionmaking.org&taskContext.c.c=PROBLISTREV&mainSearchCriteria.v.c=288.00&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=febrile neutropenia&patientPerson.administrativeGenderCode.c=M&age.v.v=64&age.v.u=a&ageGroup.v.c=D000368&encounter.c.c=IMP&informationRecipient=PROV&informationRecipient.languageCode.c=en&informationRecipient.healthCareProvider.c.c=200000000X&performer=PROV&performer.languageCode.c=en&performer.healthCareProvider.c.c=200000000X#}
+
+
+
+
+

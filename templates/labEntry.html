@@ -24,7 +24,7 @@
         }
 
 table {
-    max-width:600px;
+    max-width:450px;
 {#    table-layout:fixed;#}
     {% comment %}margin:auto;{% endcomment %}
 }
@@ -53,18 +53,9 @@ tbody tr {
 
     </style>
     <script>
-        function submitLabsForm(){
-            document.getElementById("labs2Form").submit();
-        }
-
-        function submitLabsForm2(){
-            document.getElementById("cancelButtonValue").value = "true"
-            document.getElementById("labs2Form").submit();
-            $('#cancel_alert_modal').modal("show");
-        }
-
         function checkTempAnc() {
-            var temp = {{ patient.temperature }} /* WRONG the temperature here should come from the database*/
+            $('#cancel_alert_modal').modal("hide");
+            var temp = 100;
             var anc_current = document.getElementById("anc_current").value;
             var masccscore = {{ masscore }}
 
@@ -80,6 +71,29 @@ tbody tr {
                 submitLabsForm();
             }
         }
+
+        function submitLabsForm(){
+            document.getElementById("labs2Form").submit();
+        }
+        function cancelAlertModal(){
+            $('#lowRiskModal').modal("hide");
+            $('#highRiskModal').modal("hide");
+            $('#cancel_alert_modal').modal("show");
+        }
+
+        function submitLabsForm2(){
+            /* if go back to alert is selected, show the right high/low modal */
+
+            var reason = document.querySelector('input[name = "reason"]:checked').value;
+            if(reason==3) {
+                checkTempAnc() ;
+            } else {
+
+                document.getElementById("cancelButtonValue").value = "true";
+                document.getElementById("labs2Form").submit();
+            }
+        }
+
     </script>
 
 </head>
@@ -110,44 +124,47 @@ tbody tr {
                                 <div class="tab-content">
                                     <form action="" id="labs2Form" method="post">
                                         <table style="width: 50%; height:260px">
+                                            <tr><td style="color:red">{% csrf_token %}{{ errorMessage }}</td></tr>
                                             <tr>
                                                 <td align="right">Serum Creatinine</td>
                                                 <td><input type="text" name="creatinine" id="creatinine" value=""></td>
                                             </tr>
                                             <tr>
                                                 <td align="right">Absolute Neutrophil Count</td>
-                                                <td><input type="text" name="anc_current" id="anc_current" value=""></td>
+                                                <td><input type="text" name="anc_current" id="anc_current" value="">
+                                                <input name="cancelButtonValue" id="cancelButtonValue" value="false" type="hidden">
+                                                </td>
                                             </tr>
-                                            <tr>
-                                                <td align="right">Blood Urea Nitrogen (BUN)</td>
-                                                <td><input type="text" name="bun" id="bun" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Calcium</td>
-                                                <td><input type="text" name="calcium" id="calcium" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Carbon Dioxide (Bicarbonate)</td>
-                                                <td><input type="text" name="co" id="co" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Chloride</td>
-                                                <td><input type="text" name="chloride" id="chloride" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Glucose</td>
-                                                <td><input type="text" name="glucose" id="glucose" value=""></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td align="right">Sodium</td>
-                                                <td><input type="text" name="sodium" id="sodium" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Potassium</td>
-                                                <td><input type="text" name="potassium" id="potassium" value="">
-                                                    <input name="cancelButtonValue" id="cancelButtonValue" value="false" type="hidden"></td></td>
-                                            </tr>
+{#                                            <tr>#}
+{#                                                <td align="right">Blood Urea Nitrogen (BUN)</td>#}
+{#                                                <td><input type="text" name="bun" id="bun" value=""></td>#}
+{#                                            </tr>#}
+{#                                            <tr>#}
+{#                                                <td align="right">Calcium</td>#}
+{#                                                <td><input type="text" name="calcium" id="calcium" value=""></td>#}
+{#                                            </tr>#}
+{#                                            <tr>#}
+{#                                                <td align="right">Carbon Dioxide (Bicarbonate)</td>#}
+{#                                                <td><input type="text" name="co" id="co" value=""></td>#}
+{#                                            </tr>#}
+{#                                            <tr>#}
+{#                                                <td align="right">Chloride</td>#}
+{#                                                <td><input type="text" name="chloride" id="chloride" value=""></td>#}
+{#                                            </tr>#}
+{#                                            <tr>#}
+{#                                                <td align="right">Glucose</td>#}
+{#                                                <td><input type="text" name="glucose" id="glucose" value=""></td>#}
+{#                                            </tr>#}
+{##}
+{#                                            <tr>#}
+{#                                                <td align="right">Sodium</td>#}
+{#                                                <td><input type="text" name="sodium" id="sodium" value=""></td>#}
+{#                                            </tr>#}
+{#                                            <tr>#}
+{#                                                <td align="right">Potassium</td>#}
+{#                                                <td><input type="text" name="potassium" id="potassium" value="">#}
+{#                                                    </td></td>#}
+{#                                            </tr>#}
                                             <tr>
                                                 <td></td>
                                                 <td><button type="button" class="btn btn-info btn-lg" onclick="checkTempAnc()">Submit</button></td>
@@ -181,7 +198,7 @@ tbody tr {
             </div>
             <div class="modal-footer">
                 <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitLabsForm()">OK</button>
-                    <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                    <button type="button" class="btn btn-default" onclick="cancelAlertModal()">Cancel</button>
                 </form>
             </div>
           </div>
@@ -208,7 +225,7 @@ tbody tr {
             </div>
             <div class="modal-footer">
                 <form action=""><button class="btn btn-default" type="button" value="Yes" onclick="submitLabsForm()">OK</button>
-                    <button type="button" class="btn btn-default" onclick="submitVitalsForm2()">Cancel</button>
+                    <button type="button" class="btn btn-default" onclick="cancelAlertModal()">Cancel</button>
                 </form>
             </div>
           </div>
@@ -216,37 +233,37 @@ tbody tr {
         </div>
 
 <!-- reason for cancel modal  -->
-    <div class="modal fade" id="cancel_alert_modal" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title" align="center">Reason for override</h4>
+        <div class="modal fade" id="cancel_alert_modal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" align="center">Reason for override</h4>
+                </div>
+                <div class="modal-body">
+                  <p align="center">
+                    <table>
+                        <tr>
+                            <td><input type="radio" name="reason" value="1"  id="1"></td>
+                            <td>Error - incorrect information</td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="reason"  value="2" id="2"></td>
+                            <td>Contraindicated</td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="reason" value="3" id="3"></td>
+                            <td>Go back to alert</td>
+                        </tr>
+                    </table>
+                  </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="submitLabsForm2()">Submit</button>
+                </div>
+              </div>
             </div>
-            <div class="modal-body">
-              <p align="center">
-                  <table>
-                    <tr>
-                        <td><input type="radio" name="reason" id="1"></td>
-                        <td>Error - incorrect information</td>
-                    </tr>
-                    <tr>
-                        <td><input type="radio" name="reason" id="2"></td>
-                        <td>Contraindicated</td>
-                    </tr>
-                    <tr>
-                        <td><input type="radio" name="reason" id="3"></td>
-                        <td>Go back to alert</td>
-                    </tr>
-                  </table>
-              </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Submit</button>
-            </div>
-          </div>
         </div>
-    </div>
 
 </div>
 

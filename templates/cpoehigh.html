@@ -79,25 +79,27 @@ tbody tr {
                 <div class="tab-content">
                     <div id="home" class="tab-pane fade in active">
                         <p>
-                            <form action="" method="post">
+                            <form action="proceed.html" method="post">
                                 <table>
                                     <tr><td style="color:red">{% csrf_token %}{{ errorMessage }}</td></tr>
                                     <tr>
+                                        <th>Select</th>
                                         <th>Drug</th>
                                         <th>Dose</th>
                                         <th>Route</th>
                                         <th>Frequency</th>
                                       </tr>
                                     <tr>
+                                        <td><input type="radio" name="select" id="1"></td>
                                         <td><input type="text" name="med_h" value="Pipricilllin/Tazobactam"></td>
                                         <td><input type="text" name="dose_h" value="3.375 g"></td>
                                         <td><input type="text" name="route_h" value="Intra Venous"></td>
                                         <td><input type="text" name="frequency_h" value="Q6H"></td>
                                     </tr>
                                     <tr>
-                                        <td><input type="submit" value="Submit" name="submit_order"/></td>
                                         <td></td>
-                                        <td></td>
+                                        <td><input type="submit" value="Cancel" name="cancel_order"></td>
+                                        <td><input type="submit" value="Submit" name="submit_order"></td>
                                         <td></td>
                                     </tr>
 

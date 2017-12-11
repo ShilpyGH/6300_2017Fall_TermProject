@@ -60,9 +60,8 @@ tbody tr {
             $('#cancel_alert_modal').modal("hide");
             var temp = document.getElementById("temperature").value;
             var systolic = document.getElementById("systolic").value;
-            var diastolic = document.getElementById("diastolic").value;
             var neutrophil_count_last_seven = document.getElementById("neutrophil_count_last_seven").value;
-            var masccscore = {{ masscore }} /*document.getElementById("masccscore").value;*/
+            var masccscore = {{ masscore }}
 
             if ( neutrophil_count_last_seven < 500 && temp > 98.6  && masccscore > 21) {
                 $('#lowRiskModal').modal("show");
@@ -226,8 +225,8 @@ tbody tr {
                                             <input name="cancelButtonValue" id="cancelButtonValue" value="false" type="hidden"></td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td>
+                                    <td align="right"><button type="button" class="btn btn-info btn-lg">Cancel</button></td>
+                                    <td align="center">
                                         <button type="button" class="btn btn-info btn-lg" onclick="checkTempAnc2()">Submit
                                         </button>
                                     </td>

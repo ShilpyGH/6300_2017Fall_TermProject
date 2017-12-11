@@ -54,8 +54,7 @@ tbody tr {
     </style>
     <script>
         function calcMASCC(){
-    /*        alert(document.getElementById("burden").options[sel.selectedIndex].text));*/
-
+            /* alert(document.querySelector('input[name = "burden"]:checked').value); */
 
             var systolic = {{ patient.sbp }};
             var copd = document.querySelector('input[name = "copd"]:checked').value;
@@ -64,7 +63,7 @@ tbody tr {
             var fungemia = document.querySelector('input[name = "fungemia"]:checked').value;
             var saline = document.querySelector('input[name = "fluid"]:checked').value;
             var status = document.getElementById("inpatient").value;
-            var age = {{ patient.age }};
+            var age = document.getElementById("age").value;
 
             var burden_score = 5;
             var age_score = 2;
@@ -163,9 +162,9 @@ tbody tr {
                                         <td><input type="text" name="inpatient" id="inpatient" value="inpatient"></td></tr>
                                     <tr><td>Age</td><td><input type="text" name="age" id="age" value={{ patient.age }}></td></tr>
                                     <tr>
-                                        <td><button type="button" class="btn btn-info btn-lg" onclick="calcMASCC()">Submit00
-                                        </button></td>
-                                        <td><input type="button" class="btn btn-info btn-lg" onclick="calcMASCC()"/>Submit
+                                        <td><button type="button" class="btn btn-info btn-lg">Cancel</button></td>
+                                        <td><button type="button" class="btn btn-info btn-lg" onclick="calcMASCC()">Submit
+                                        </button>
                                         </td>
                                     </tr>
 

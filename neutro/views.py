@@ -110,7 +110,7 @@ def index(request):
     MASCC_score = 0
     MASCC_score = age_score + sbp_score + saline_score + COPD_score + sepsis_score + cancer_score
 
-    MASCC_score = 22
+    #MASCC_score = 22
 
     observation = {}
 
@@ -132,13 +132,11 @@ def index(request):
         form = VitalsForm(request.POST)
         if form.is_valid():
             patientLinkage = PatientModel.objects.get(patientID=patientId)
-            # where does the data for temperature and anc coming from? is it from forms.py
             tempObj = PatientVitalsModel(patientID=patientLinkage, temperature=form.cleaned_data["temperature"],
                                          systolic=form.cleaned_data["systolic"],
                                          diastolic=form.cleaned_data["diastolic"],
                                          heartrate=form.cleaned_data["heartrate"], )
             tempObj.save()
-            # return redirect("https://www.djangoproject.com")
 
             if form.cleaned_data['cancelButtonValue'] == 'true':
                 return render(request, 'proceed.html',
@@ -188,14 +186,6 @@ def checkTempAnc(request):
 def labEntry(request):
     patientId = 'cf-1508345037261'
     errorMessage = ""
-    if request.method == 'POST':
-        form = Labs2Form(request.POST)
-        patientLinkage = PatientModel.objects.get(patientID=patientId)
-        tempObj = PatientVitalsModel(patientID=patientLinkage,
-                                         Ancvalue=form.cleaned_data["anc_current"],
-                                         Serumvalue=form.cleaned_data["creatinine"], )
-        tempObj.save()
-
     settings = {
         'app_id': 'my_web_app',
         'api_base': 'https://fhirtest.uhn.ca/baseDstu3'
@@ -225,16 +215,44 @@ def labEntry(request):
     patient['age'] = age
     patient['id'] = patientId
 
-    patientVitals = PatientVitalsModel.objects.only('temperature').filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
+    #patientVitals = PatientVitalsModel.objects.only('temperature').filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
     #print( list(patientVitals.last()) )
+    temperature = 100
 
-    temperature=100
-    patient['temperature'] =100
+    patientTemperature= PatientVitalsModel.objects.filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
+
+    patient['temperature'] = patientTemperature.last()
+    MASCC_score = 5
 
     form = Labs2Form()
-    #print(temperature[0:1])
+
+    if request.method == 'POST':
+        form = Labs2Form(request.POST)
+        if form.is_valid():
+            patientLinkage = PatientModel.objects.get(patientID=patientId)
+            tempObj = PatientLabs2Model(patientID=patientLinkage,
+                                         Ancvalue=form.cleaned_data["anc_current"],
+                                         Serumvalue=form.cleaned_data["creatinine"], )
+            tempObj.save()
+
+            if form.cleaned_data['cancelButtonValue'] == 'true':
+                return render(request, 'proceed.html',
+                              {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                               'masscore': MASCC_score, })
+
+            elif MASCC_score < 21:
+                return render(request, 'cpoehigh.html',
+                              {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                               'masscore': MASCC_score, })
+            else:
+                return render(request, 'cpoe.html',
+                              {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                               'masscore': MASCC_score, })
+        else:
+            errorMessage = ""
+
     return render(request, 'labEntry.html',
-                  {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage, })
+                  {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage, 'temperature': temperature, 'masscore':MASCC_score, })
 
 def MASCC(request):
     '''a = 1 '''
@@ -292,7 +310,7 @@ def MASCC(request):
                     })
 
 def proceed(request):
-    patientId = 'cf-1507833566732'
+    patientId = 'cf-1508345037261'
 
     errorMessage = ""
     settings = {
@@ -326,6 +344,37 @@ def proceed(request):
                   {'form': '', 'patient': patient, 'observation': '', 'errorMessage': errorMessage, })
 
 def cpoe(request):
+    patientId = 'cf-1507833566732'
+
+    errorMessage = ""
+    settings = {
+        'app_id': 'my_web_app',
+        'api_base': 'https://fhirtest.uhn.ca/baseDstu3'
+    }
+    smart = client.FHIRClient(settings=settings)
+    patient = p.Patient.read(patientId, smart.server)
+
+    firstName = patient.name[0].given[0]
+    middleName = patient.name[0].given[1]
+    familyName = patient.name[0].family
+    dob = patient.birthDate.isostring
+    dob2 = datetime.strptime(dob, '%Y-%m-%d')
+    gender = patient.gender
+    now = datetime.today()
+
+    rdelta = relativedelta(now, dob2)
+    age = rdelta.years
+
+    patient = {}
+    patient['firstName'] = firstName
+    patient['middleName'] = middleName
+    patient['familyName'] = familyName
+    patient['gender'] = gender
+    patient['dob'] = dob
+    patient['age'] = age
+    patient['id'] = patientId
+
+def cpoehigh(request):
     patientId = 'cf-1507833566732'
 
     errorMessage = ""
@@ -399,9 +448,6 @@ def chooseAntibiotics():
         elif penicillin_allergy == False:
             medication.append("Meropenem")
             rxNorm.append("29561")
-
-
-
 
 def getPatient(patientId):
         settings = {

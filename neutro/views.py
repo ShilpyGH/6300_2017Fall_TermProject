@@ -51,6 +51,8 @@ def index(request):
     dob2 = datetime.strptime(dob, '%Y-%m-%d')
     gender = patient.gender
     now = datetime.today()
+    patientId = "cf-1508345037261"
+
 
     rdelta = relativedelta(now, dob2)
     age = rdelta.years
@@ -124,6 +126,7 @@ def index(request):
     patient['id'] = patientId
     patient['condition'] = conditions  # this is a list of conditions
     patient['sbp'] = sbp_value
+    patient['Id'] = patientId
 
     form = VitalsForm()
 
@@ -156,6 +159,131 @@ def index(request):
             errorMessage = "Values are incorrect"
 
 
+
+    return render(request, 'index.html',
+                  {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage, 'masscore':MASCC_score,})
+
+def lowrisk(request):
+    patientId = 'cf-1508345037261'
+    errorMessage = ""
+
+    settings = {
+        'app_id': 'my_web_app',
+        'api_base': 'https://fhirtest.uhn.ca/baseDstu3'
+    }
+    smart = client.FHIRClient(settings=settings)
+    patient = p.Patient.read(patientId, smart.server)
+
+    firstName = patient.name[0].given[0]
+    middleName = patient.name[0].given[1]
+    familyName = patient.name[0].family
+    dob = patient.birthDate.isostring
+    dob2 = datetime.strptime(dob, '%Y-%m-%d')
+    gender = patient.gender
+    now = datetime.today()
+
+    rdelta = relativedelta(now, dob2)
+    age = rdelta.years
+
+    # Data for MASCC score
+    age_score = 2
+    if age >= 60:
+        age_score = 0
+
+    # spb_score
+    sbp_score = 5
+    search = obs.Observation.where(struct={'patient': "cf-1508345037261", 'code': "8480-6"})
+    sbp = search.perform_resources(smart.server)
+    if sbp:
+        sbp_value = sbp[0].valueQuantity.value
+        sbp_units = sbp[0].valueQuantity.unit
+    if sbp_value <= 90:
+        sbp_score = 0
+
+    # Identify patient medication
+    smart = client.FHIRClient(settings=settings)
+    search = m.MedicationAdministration.where(struct={'patient': "cf-1508345037261"})
+    medications = search.perform_resources(smart.server)
+
+    # Determine if Patient Recieved Saline IV Fluids and Calculate Saline_score
+    saline_score = 3
+    for medication in medications:
+        if 'saline' in medication.medicationCodeableConcept.coding[0].display.lower():
+            saline_score = 0
+
+    # Identify Patient Conditions
+    smart = client.FHIRClient(settings=settings)
+    search = c.Condition.where(struct={'patient': "cf-1508345037261"})
+    conditions = search.perform_resources(smart.server)
+
+    # Determine if Patient has COPD, Fungemia, Hematologic Malignancies, Sepsis
+    COPD_score = 4
+    sepsis_score = 5
+    cancer_score = 4
+    hematologic_malignancy = 0
+    fungemia = 0
+    for condition in conditions:
+        if 'chronic obstructive pulmonary disease' in condition.code.coding[0].display.lower():
+            COPD_score = 0
+        if 'sepsis' in condition.code.coding[0].display.lower():
+            sepsis_score = 0
+        if 'fungemia' in condition.code.coding[0].display.lower():
+            fungemia = 1
+        if 'leukemia' in condition.code.coding[0].display.lower():
+            hematologic_malignancy = 1
+
+    if hematologic_malignancy == 1 and fungemia == 1:
+        cancer_score = 0
+
+    # Calculator
+    # The expected Score is a MASCC Score of 5, High Risk Patient
+    MASCC_score = 0
+    MASCC_score = age_score + sbp_score + saline_score + COPD_score + sepsis_score + cancer_score
+
+    MASCC_score = 22
+
+    observation = {}
+
+    patient = {}
+    patient['firstName'] = firstName
+    patient['middleName'] = middleName
+    patient['familyName'] = familyName
+    patient['gender'] = gender
+    patient['dob'] = dob
+    patient['age'] = age
+    patient['id'] = patientId
+    patient['condition'] = conditions  # this is a list of conditions
+    patient['sbp'] = sbp_value
+    patient['Id'] = patientId
+
+    form = VitalsForm()
+
+    if request.method == 'POST':
+        form = VitalsForm(request.POST)
+        if form.is_valid():
+            patientLinkage = PatientModel.objects.get(patientID=patientId)
+            tempObj = PatientVitalsModel(patientID=patientLinkage, temperature=form.cleaned_data["temperature"],
+                                         systolic=form.cleaned_data["systolic"],
+                                         diastolic=form.cleaned_data["diastolic"],
+                                         heartrate=form.cleaned_data["heartrate"], )
+            tempObj.save()
+
+            if form.cleaned_data['cancelButtonValue'] == 'true':
+                return render(request, 'proceed.html',
+                          {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                           'masscore': MASCC_score, })
+
+            elif MASCC_score < 21:
+                return render(request, 'cpoehigh.html',
+                          {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                           'masscore': MASCC_score, })
+            else:
+                return render(request, 'cpoe.html',
+                          {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage,
+                           'masscore': MASCC_score, })
+
+        else:
+            errorMessage = "Values are incorrect"
 
     return render(request, 'index.html',
                   {'form': form, 'patient': patient, 'observation': observation, 'errorMessage': errorMessage, 'masscore':MASCC_score,})
@@ -469,15 +597,17 @@ def getPatient(patientId):
             age = rdelta.years
 
         except:
-            first_name = 'Captain'
-            family_name = 'America'
+            first_name = 'John'
+            middle_name = 'Edmund'
+            family_name = 'Smit'
             gender = 'Male'
-            dob = '1920-07-04'
+            dob = '1953-05-05'
             dob2 = datetime.strptime(dob, '%Y-%m-%d')
             age = relativedelta(datetime.today(), dob2).years
 
         patient = {}
         patient['first_name'] = first_name
+        patient['middle_name'] = middle_name
         patient['family_name'] = family_name
         patient['gender'] = gender
         patient['dob'] = dob

@@ -59,11 +59,11 @@ tbody tr {
             var anc_current = document.getElementById("anc_current").value;
             var masccscore = {{ masscore }}
 
-            if ( anc_current < 500 && temp > 98.6  && masccscore > 21) {
+            if ( anc_current < 500 && temp > 38.3  && masccscore > 21) {
                 $('#lowRiskModal').modal("show");
                 $('#temperatureModalLow').text(temp);
                 $('#ancLow').text(anc_current);
-            } else if ( anc_current < 500 && temp > 98.6 && masccscore < 21) {
+            } else if ( anc_current < 500 && temp > 38.3 && masccscore < 21) {
                 $('#highRiskModal').modal("show");
                 $('#temperatureModalHigh').text(temp);
                 $('#ancHigh').text(anc_current);

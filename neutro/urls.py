@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'cpoehigh', views.cpoehigh, name='cpoehigh'),
     url(r'labEntry', views.labEntry, name='labEntry'),
     url(r'proceed', views.proceed, name='proceed'),
+    url(r'lowrisk', views.lowrisk, name='lowrisk'),
     url(r'infobutton', views.infobutton, name='index.urls'),
 ]

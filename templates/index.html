@@ -72,6 +72,7 @@ tbody tr {
                 $('#temperatureModalHigh').text(temp);
                 $('#ancHigh').text(neutrophil_count_last_seven);
             } else {
+                document.getElementById("cancelButtonValue").value = "true";
                 submitVitalsForm();
             }
         }
@@ -252,7 +253,7 @@ tbody tr {
             <div class="modal-body">
               <p align="center">The patient has: <br>
                   ANC:  <span id="ancLow"></span><br>
-                  Temperature:  <span id="temperatureModalLow"></span><br>
+                  Temperature:  <span id="temperatureModalLow"></span> C <br>
                   MASCC Score: <span id="masccscore">{{ masscore }}</span> <br><br>
                   Low risk for febrile neutropenia
                   <a href="http://service.oib.utah.edu:8080/infobutton-service/infoRequest?representedOrganization.id.root=medicaldecisionmaking.org&taskContext.c.c=PROBLISTREV&mainSearchCriteria.v.c=288.00&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=febrile neutropenia&patientPerson.administrativeGenderCode.c=M&age.v.v=64&age.v.u=a&ageGroup.v.c=D000368&encounter.c.c=IMP&informationRecipient=PROV&informationRecipient.languageCode.c=en&informationRecipient.healthCareProvider.c.c=200000000X&performer=PROV&performer.languageCode.c=en&performer.healthCareProvider.c.c=200000000X" target="_blank">
@@ -281,7 +282,7 @@ tbody tr {
                 <div class="modal-body">
                   <p align="center">The patient has: <br>
               ANC: <span id="ancHigh"></span><br>
-              Temperature: <span id="temperatureModalHigh"></span><br>
+              Temperature: <span id="temperatureModalHigh"> C </span><br>
               MASCC Score: <span id="masccscore">{{ masscore }}</span> <br><br>
               High risk for febrile neutropenia <a href="http://service.oib.utah.edu:8080/infobutton-service/infoRequest?representedOrganization.id.root=medicaldecisionmaking.org&taskContext.c.c=PROBLISTREV&mainSearchCriteria.v.c=288.00&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=febrile neutropenia&patientPerson.administrativeGenderCode.c=M&age.v.v=64&age.v.u=a&ageGroup.v.c=D000368&encounter.c.c=IMP&informationRecipient=PROV&informationRecipient.languageCode.c=en&informationRecipient.healthCareProvider.c.c=200000000X&performer=PROV&performer.languageCode.c=en&performer.healthCareProvider.c.c=200000000X" target="_blank">
                       <button class="btn btn-primary">i</button>

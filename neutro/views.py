@@ -343,13 +343,15 @@ def labEntry(request):
     patient['age'] = age
     patient['id'] = patientId
 
-    #patientVitals = PatientVitalsModel.objects.only('temperature').filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
-    #print( list(patientVitals.last()) )
-    temperature = 100
+    patientVitals = PatientVitalsModel.objects.only('temperature').filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
+    #print(type(patientVitals.last()))
+    # print((patientVitals.last()).get_temperature())
+    # print('a')
+    temperature = (patientVitals.last()).get_temperature()
 
     patientTemperature= PatientVitalsModel.objects.filter(patientID=PatientModel.objects.get(patientID=patientId)).order_by('datetime')
 
-    patient['temperature'] = patientTemperature.last()
+    patient['temperature'] = temperature
     MASCC_score = 5
 
     form = Labs2Form()

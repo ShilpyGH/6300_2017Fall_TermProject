@@ -55,7 +55,7 @@ tbody tr {
     <script>
         function checkTempAnc() {
             $('#cancel_alert_modal').modal("hide");
-            var temp = 100;
+            var temp = {{ patient.temperature }};
             var anc_current = document.getElementById("anc_current").value;
             var masccscore = {{ masscore }}
 
@@ -68,6 +68,7 @@ tbody tr {
                 $('#temperatureModalHigh').text(temp);
                 $('#ancHigh').text(anc_current);
             } else {
+                document.getElementById("cancelButtonValue").value = "true";
                 submitLabsForm();
             }
         }
@@ -166,7 +167,7 @@ tbody tr {
 {#                                                    </td></td>#}
 {#                                            </tr>#}
                                             <tr>
-                                                <td align="right"><button type="button" class="btn btn-info btn-lg">Cancel</button></td>
+                                                <td align="right"><button type="button" class="btn btn-info btn-lg" onclick="window.location.href='proceed.html'">Cancel</button></td>
                                                 <td align="center"><button type="button" class="btn btn-info btn-lg" onclick="checkTempAnc()">Submit</button></td>
                                             </tr>
                                         </table>

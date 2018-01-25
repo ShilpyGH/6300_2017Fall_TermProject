@@ -27,4 +27,7 @@ class PatientVitals(models.Model):
 	temperature = models.FloatField(default=0)
 
 
+	def get_temperature(self):
+		return self.temperature
+
 
